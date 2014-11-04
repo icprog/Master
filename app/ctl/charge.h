@@ -86,12 +86,12 @@ static const struct _charge_control_param g_charge_control[] =
  * */
 
 /****************************************external interface needs******************************************/
-#define GET_CURRENT_V_SUM()  BMS_GetVoltageValueBatteryTotal()  // ret UINT32
+#define GET_CURRENT_V_SUM() BMS_GetVoltageValueBatteryTotal()  // ret UINT32
 #define GET_CURRENT_V_MIN() BMS_GetVoltageValueMinCell() //ret UINT16
 #define GET_CURRENT_V_MAX() BMS_GetVoltageValueMaxCell() //ret UINT16
 #define GET_CURRENT() 0//get_current() //ret UINT16
-#define GET_TEMPERATURE_MAX() BMS_GetTemperaturValueMaxValue// ret INT16
-#define GET_TEMPERATURE_MIN() BMS_GetTemperaturValueMinValue// ret INT16
+#define GET_TEMPERATURE_MAX() BMS_GetTemperaturValueMaxValue()// ret INT16
+#define GET_TEMPERATURE_MIN() BMS_GetTemperaturValueMinValue()// ret INT16
 
 /****************************************for external interface******************************************/
 INT16 charge_control(void); //return >=0 success
@@ -105,12 +105,26 @@ enum TYPE_BMS_POWER_ON
 	POWER_ON_OVER
 };
 
+enum SYSTEM_ACTIVE_MODE{
+	SYSTEM_ACTIVE_MODE_NONE,
+	SYSTEM_ACTIVE_MODE_KEY_TO_ACC,
+	SYSTEM_ACTIVE_MODE_ACCHARGER_IN,
+	SYSTEM_ACTIVE_MODE_DCCHARGER_IN
+};
+
 int BMS_GetChargerConnectStatus(void);    // 1,connect 0:unconnected
 int BMS_IsChargging(void);                //1:charging, 0:uncharged
 int BMS_PowerOn(void);
 int BMS_GetPowerOnStatus(void); //enum TYPE_BMS_POWER_ON
 int BMS_PowerOff(void);
+TYPE_CURRENT BMS_GetCurrentValueMaxAllowableDischarge(void);
 
+int BMS_SelfCheckPass(void);  //1 pass, 0:negative
+
+
+
+int SetSystemActiveMode(UINT8 mode);
+UINT8 GetSystemActiveMode( void );
 #endif
 
 // kate: indent-mode cstyle; indent-width 4; replace-tabs on; 

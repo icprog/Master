@@ -80,8 +80,8 @@ extern Closed_Loop_CtlParamBus Closed_Loop_CtlParam;/* Variable: Closed_Loop_Ctl
 extern void Closed_Loop_NCM_29Ah_initialize(void);
 
 /* Customized model step function */
-extern void Closed_Loop_NCM_29Ah_custom(Closed_Loop_InParamBus
   *arg_Closed_Loop_In, Closed_Loop_OutParamBus *arg_Closed_Loop_Out);
+extern void Closed_Loop_NCM_29Ah_custom(Closed_Loop_InParamBus
 
 /* Exported data declaration */
 extern Closed_Loop_RCParamBus Closed_Loop_RCParam;

@@ -292,4 +292,130 @@ charge_control(void)
   return ret;
 }
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+/*
+ * system wake up
+ * */
+int SystemWakeUp(void)
+{
+	waitForKeyACCActive();
+	waitForKeyONActive();
+	waitForVCUCheckSelfOK();
+	PowerOnHighVoltage();
+	return 0;
+}
+
+#define KEY_TO_ACC() (gpio_read(IO_STATUS_ACC) == 1)
+#define KEY_TO_ON() (gpio_read(IO_STATUS_ON) == 1)
+#define DC_CHARGER_INSERT() (gpio_read(IO_STATUS_CC2) == 1)
+#define DC_CHARGER_DISCONNECT() (gpio_read(IO_STATUS_CC2) == 0)
+#define AC_CHARGER_INSERT() (adcRead(ADC_PORT_ACCIN) > T_AC_VALUE )
+#define AC_CHARGER_DISCONNECT() ( (gpio_read(ADC_PORT_ACCIN) < T_AC_VALUE))
+
+
+int BMS_GetChargerConnectStatus(void)    // 1,connect 0:unconnected
+{
+	if(DC_CHARGER_INSERT || AC_CHARGER_INSERT)
+		return 1;
+	return 0;
+}
+
+int BMS_IsChargging(void)             //1:charging, 0:uncharged
+{
+	//TODO 
+	return 0;
+}
+
+/*
+ * this  is a max allowable discharge current manager module
+ * */
+#define BATTERY_C 90 // A*H
+static TYPE_CURRENT g_dischargeMaxAllowableCurrent = BATTERY_C;
+TYPE_CURRENT BMS_GetCurrentValueMaxAllowableDischarge(void)
+{
+	//TODO 
+	return g_dischargeMaxAllowableCurrent;
+}
+
+int SetCurrentMaxAllowableDischarge(TYPE_CURRENT current)
+{
+	//TODO
+	return 0;
+}
+
+int ReduceCurrentMaxAllowableDischarge(TYPE_CURRENT reduceCurrent)
+{
+	//TODO
+	if(reduceCurrent>g_dischargeMaxAllowableCurrent)
+		g_dischargeMaxAllowableCurrent = 0;
+	else
+		g_dischargeMaxAllowableCurrent -= reduceCurrent;
+	return 0;
+}
+
+
+/*
+ * the next is the key activate and charge activate manage module
+ * */
+int KeyActiveCheck(void)
+{
+	if( KEY_TO_ACC() )
+		return 1;
+	return 0;
+}
+int DCChargeInActiveCheck(void)
+{
+	if( DC_CHARGER_INSERT() )
+	{
+		return 1;
+	}
+	return 0;
+}
+
+int ACChargeInActive(void)
+{
+	if( AC_CHARGER_INSERT())
+	{
+		return 1;
+	}
+	return 0;
+}
+
+static UINT8 gSysteActiveMode = 0;
+int SetSystemActiveMode(UINT8 mode)
+{
+	gSysteActiveMode = mode;
+	return 0;
+}
+UINT8 GetSystemActiveMode( void )
+{
+	return gSysteActiveMode;
+}
+
+
+int SleepModeDetection(void)
+{
+	if(KeyActiveCheck())
+	{
+		SetSystemActiveMode( SYSTEM_ACTIVE_MODE_KEY_TO_ACC );
+	}
+	else if(ACChargeInActive())
+	{
+		SetSysteActivemMode(SYSTEM_ACTIVE_MODE_ACCHARGER_IN);
+	}
+	else if(DCChargeInActive())
+	{
+		SetSystemActiveMode(SYSTEM_ACTIVE_MODE_DCCHARGER_IN);
+	}
+	return gSysteActiveMode;
+}
+
+
+
+
+
+
+int ACCharge(void)
+{
+	return 0;
+}
+

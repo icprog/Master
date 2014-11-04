@@ -1,12 +1,10 @@
 /*********************************************************
 *
-* ��оԴ΢�������޹�˾(UCT)
-*
 * File Description
 *
 *   $Revision: 3405 $
 *   $Author: huhai $
-*   $Date: 2014-09-01 17:02:40 +0800 (周一, 01 九月 2014) $
+*   $Date: 2014-09-01 17:02:40 +0800 $
 *
 *********************************************************/
 
@@ -17,8 +15,6 @@
 #include "public/public.h"
 #include "public/types.h"
 #include "log/log.h"
-
-
 
 //#define TOTAL_TEMP_POINT_NUM              91
 
@@ -54,5 +50,8 @@ int BMS_GetErrStatusTemperatureByType( UINT8 types);     //1:err, 0 OK
 
 int getTemperatureState(void);
 int observerTemperatureUpdate(void); 
+
 #endif
+
+
 

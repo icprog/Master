@@ -12,8 +12,8 @@
 *********************************************************/
 
 #include "stop_time.h"
-#include "timer.h"
-#include "current.h"
+#include "timer/timer.h"
+#include "current/current.h"
 #include "../banlance_battery/banlancebattery.h"
 #include "../ctl/control.h"
 #define STOP_CURRENT_THRESHOLD 0

@@ -158,12 +158,12 @@ enum LED_STATE
 {
   TURN_OFF, TURN_ON
 };
-
-enum SYSTEM_MODE
-{
-	SYSTEM_MODE_WORK,
-	SYSTEM_MODE_SLEEP
-};
+//
+//enum SYSTEM_MODE
+//{
+//	SYSTEM_MODE_WORK,
+//	 
+//};
 
 enum CANINFORPARAM
 {

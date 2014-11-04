@@ -1,7 +1,5 @@
 /*********************************************************
  *
- * ��оԴ΢�������޹�˾(UCT)
- *
  * File Description
  *
  *   $Revision: 3405 $
@@ -70,4 +68,4 @@ int getVoltageState(void);
 #define V_2_100UV(v)  ((v)*1000*10)
 #define V_2_MV(v) ((v)*1000)
 #endif
-// kate: indent-mode cstyle; indent-width 4; replace-tabs on; 
+
