@@ -2,6 +2,7 @@
 #define _GPIO_H_
 
 #include "public/public.h"
+#include "Gpio/port_defs.h"
 //
 //typedef unsigned char UINT8;
 //typedef unsigned short UINT16;
@@ -20,11 +21,11 @@ enum GPIO_STATE
 
 #define GPIO_PORT_MAX 232
 #define GPIO_PORT_MIN 83
-
-#define LED1_PORT 191
-#define LED2_PORT 191
-#define LED3_PORT 191
-#define LED4_PORT 191
+//
+//#define LED1_PORT 191
+//#define LED2_PORT 191
+//#define LED3_PORT 191
+//#define LED4_PORT 191
 
 
 void gpio_init(UINT8 gpioport, enum GPIO_TYPE xtype) ;
