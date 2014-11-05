@@ -2,6 +2,9 @@
 #define _RELAY_H_
 #include "public/public.h"
 #include "Gpio/gpio.h"
+#include "voltage/voltage.h"
+
+#define GetLoadVoltage() 10
 
 /*
  * needed by vcu_protocol.h
@@ -23,6 +26,9 @@ int OpenRelayPrechargeByTimerS(UINT32 times);
 
 int ShutdownRelayNegative(void);
 int ShutdownRelayPositive(void);
+
+
+
 
 #endif
 

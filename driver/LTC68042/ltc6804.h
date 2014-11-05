@@ -1,14 +1,26 @@
-#ifndef _SPI_SIMULATOR_H_
-#define _SPI_SIMULATOR_H_
-#include "Gpio/gpio.h"
-#include"Gpio/port_defs.h"
+/*
+ * ltc6804.h
+ *
+ *  Created on: Nov 4, 2014
+ *      Author: Administrator
+ */
+/*********************************************************
+*
+* 晟芯源微电子有限公司(UCT)
+*
+* File Description
+*
+*   $Revision: 2484 $
+*   $Author: huhai $
+*   $Date: 2014-08-01 11:05:59 +0800 (鍛ㄤ簲, 01 鍏湀 2014) $
+*
+*********************************************************/
+#ifndef _LTC6804_H_
+#define _LTC6804_H_
 
-#define SCLK    SPIB_PORT_SCK                    //定义SCLK所对应的GPIO接口编号  
-#define MOSI    SPIB_PORT_MOSI                     //定义SCLK所对应的GPIO接口编号  
-#define MISO    SPIB_PORT_MISO                    //定义MISO所对应的GPIO接口编号  
-#define SS      SPIB_PORT_CS                     //定义SS所对应的GPIO接口编号  
-#define OUTP    GPIO_OUTPUT                       //表示GPIO接口方向为输出  
-#define INP GPIO_INPUT                           //表示GPIO接口方向为输入  
+
+#include "public/public.h"
+#define MAX_CELLS 90
 
 #define LTC6804_CMD_MD_FAST        01      //fast Mode, 27kHz/14kHz Mode
 #define LTC6804_CMD_MD_NORMAL        02    //Normal Mode, 7kHz/3kHz Mode
@@ -54,19 +66,17 @@
 #define LTC6804_MAX_TEMP      5
 #define LTC6804_MAX_VOL       12
 
-#define set_gpio_direction(port, direction) gpio_init( port, direction)
-#define	set_gpio_value(port, value) gpio_set(port, value)
-#define get_gpio_value(port) gpio_read(port)
-INT16 ltc6804_init();
-int spi_init(void);
-void spi_write_byte(UINT8 b);
-UINT8 spi_read_byte(void);
-void SPI_Write(UINT8 *buff, UINT16 len);
-void SPI_Read(UINT8 *dstbuf, UINT16 n) ;
+//INT16 ltc6804_init();
+//void ltc6804_init() ;
+//void wr_balance(  UINT8 index, UINT8 state );
+enum UCT_ERR_CODE ltc6804_checkself ();
 enum UCT_ERR_CODE ltc6804_voltage_monitor () ;
 enum UCT_ERR_CODE ltc6804_temp_monitor ();
+enum UCT_ERR_CODE ltc6804_set_balance(UINT8 index,UINT8 state);
+enum UCT_ERR_CODE ltc6804_voltage_monitor ();
+UINT16 ltc6804_read_v(UINT8 index);
+INT16 ltc6804_read_t(UINT8 index);
+UINT8 ltc6804_read_balance(UINT8 index);
 #endif
-
-
 
 

@@ -1,6 +1,10 @@
 /*
  * the next is the system state machine module
  * */
+#include "public/systemState.h"
+#include "public/types.h"
+#include "Gpio/gpioFuncs.h"
+#include "ctl/charge.h"
 
 struct system_module
 {
@@ -17,6 +21,7 @@ UINT8 GetSystemMode(void)
 int SetSystemMode(UINT8 mode)
 {
 	gSystemMode.systemModule = mode;
+	return 0;
 }
 
 int SystemStateMachine(void)

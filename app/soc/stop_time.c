@@ -11,7 +11,7 @@
 *
 *********************************************************/
 
-#include "stop_time.h"
+#include "soc/stop_time.h"
 #include "timer/timer.h"
 #include "current/current.h"
 #include "../banlance_battery/banlancebattery.h"

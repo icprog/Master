@@ -8,8 +8,8 @@ int OpenRelayPrecharge(void)
 {
 	//TODO
 	return 0;
-
 }
+
 int OpenRelayPositive(void)
 {
 	//TODO

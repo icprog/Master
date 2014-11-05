@@ -2,6 +2,7 @@
 #include "gpio.h"
 #include "pll/pll.h"
 #include "string.h"
+#include "Gpio/port_defs.h"
 #include "IntcInterrupts.h"   
 #include "protocol/uart_protocol.h"
 
@@ -105,12 +106,12 @@ test_SCIA(void)
 
   Config_PLL();
   initESCI_A();
-  gpio_init(LED1_PORT, GPIO_OUTPUT);
+  gpio_init(IO_CTL_LED1, GPIO_OUTPUT);
   /* Loop forever */
   for (;;)
     {
       scia_send(s, sizeof(s));
-      gpio_set(LED1_PORT, flag);
+      gpio_set(IO_CTL_LED1, flag);
       flag = 1 - flag;
       
 //      data_receive=SCIA_getChar();

@@ -12,7 +12,7 @@
 
 #include "public/public.h"
 #include "soc/soc.h"
-#include "LTC68042/BatteryPack.h"
+#include "LTC68042/ltc6804.h"
 
 #define V_TO_100UV(v)  ((v)*10000)
 

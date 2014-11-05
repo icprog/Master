@@ -15,6 +15,8 @@
 #include "current/current.h"
 #include "voltage/voltage.h"
 #include "gpio/gpio.h"
+#include "Gpio/gpioFuncs.h"
+#include "ctl/relay.h"
 
 /***************************MACRO FUNCTIONS*************************************/
 #define SET_CHARGE_BY_CONSTCURRENT(current) set_charge_mode( C_MODE_CONSTCURRENT, 0, current )
@@ -168,83 +170,84 @@ DECLARE_CHARGE_PROCESS ( temperature )
  */
 int timer_precharge;
 
-INT16 precharge_process ( int argc, char**argv )
-  {
-    //discharge_ctrl ( TURN_OFF );
-    charge_ctrl ( TURN_ON );
-    precharge_ctrl_later ( TURN_OFF );
-    timer_stop ( timer_precharge );
-    return 0;
-  }
-
-int precharge_control_timer_init ( void )
-  {
-//    struct timerspec ts;
-//    ts.time_ms = 0;
-//    ts.time_s = 10; //MINITUE_TO_S ( 3 );
-//    timer_precharge = timer_get ( &ts, ( timer_process ) precharge_process, 0 );
+//INT16 precharge_process ( int argc, char**argv )
+//  {
+//    //discharge_ctrl ( TURN_OFF );
+//    charge_ctrl ( TURN_ON );
+//    precharge_ctrl_later ( TURN_OFF );
+//    timer_stop ( timer_precharge );
+//    return 0;
+//  }
 //
-//    if ( timer_precharge < 0 )
+//int precharge_control_timer_init ( void )
+//  {
+////    struct timerspec ts;
+////    ts.time_ms = 0;
+////    ts.time_s = 10; //MINITUE_TO_S ( 3 );
+////    timer_precharge = timer_get ( &ts, ( timer_process ) precharge_process, 0 );
+////
+////    if ( timer_precharge < 0 )
+////      {
+////        //err process
+////        return -1;
+////      }
+//
+//    return 0;
+//  }
+
+//int start_precharge ( void )
+//  {
+//#ifdef _USE_BM01
+//    precharge_ctrl_later ( TURN_ON );
+//
+//    if ( timer_reset ( timer_precharge ) < 0 )
+//      {
+//        goto timer_err;
+//      }
+//
+//    if ( timer_start ( timer_precharge ) < 0 )
 //      {
 //        //err process
-//        return -1;
+//        goto timer_err;
 //      }
-
-    return 0;
-  }
-
-int start_precharge ( void )
-  {
-#ifdef _USE_BM01
-    precharge_ctrl_later ( TURN_ON );
-
-    if ( timer_reset ( timer_precharge ) < 0 )
-      {
-        goto timer_err;
-      }
-
-    if ( timer_start ( timer_precharge ) < 0 )
-      {
-        //err process
-        goto timer_err;
-      }
-#endif
-#ifdef _USE_BM03
-    charge_ctrl( TURN_ON );
-#endif
-
-    return 0;
-#ifdef _USE_BM01
-    timer_err:
-    return -1;
-#endif
-  }
-
-int stop_charge ( void )
-  {
-#if _USE_BM01
-    timer_stop ( timer_precharge );
-    precharge_ctrl_later ( TURN_OFF );
-#endif
-    charge_ctrl_later ( TURN_OFF );
-    return 0;
-  }
-
-int charge_init ( void )
-  {
-    return precharge_control_timer_init ( );
-  }
+//#endif
+//#ifdef _USE_BM03
+//    charge_ctrl( TURN_ON );
+//#endif
+//
+//    return 0;
+//#ifdef _USE_BM01
+//    timer_err:
+//    return -1;
+//#endif
+//  }
+//
+//int stop_charge ( void )
+//  {
+//#if _USE_BM01
+//    timer_stop ( timer_precharge );
+//    precharge_ctrl_later ( TURN_OFF );
+//#endif
+//    charge_ctrl_later ( TURN_OFF );
+//    return 0;
+//  }
+//
+//int charge_init ( void )
+//  {
+//    return precharge_control_timer_init ( );
+//  }
 
 
 /*******************************************************************************************************
  * control the charge status by capture volatage , current, and temperature
  * return >=0 success, <0 err
  *******************************************************************************************************/
-static const UINT32 charge_close_by_protect_status = PROTECT_HIGH_VOL
-    | PROTECT_OVER_CURRENT | PROTECT_HIGH_TEMPERARTURE |PROTECT_SHORT_CIRCUIT ;
-static const UINT32 discharge_close_by_protect_status =
-    (PROTECT_HIGH_TEMPERARTURE | PROTECT_OVER_CURRENT
-        | PROTECT_LOW_VOL | PROTECT_SHORT_CIRCUIT);
+static const UINT32 charge_close_by_protect_status = 0;
+//PROTECT_HIGH_VOL
+//    | PROTECT_OVER_CURRENT | PROTECT_HIGH_TEMPERARTURE |PROTECT_SHORT_CIRCUIT ;
+static const UINT32 discharge_close_by_protect_status = 0;
+//    (PROTECT_HIGH_TEMPERARTURE | PROTECT_OVER_CURRENT
+//        | PROTECT_LOW_VOL | PROTECT_SHORT_CIRCUIT);
 INT16
 charge_control(void)
 {
@@ -297,24 +300,18 @@ charge_control(void)
  * */
 int SystemWakeUp(void)
 {
-	waitForKeyACCActive();
-	waitForKeyONActive();
-	waitForVCUCheckSelfOK();
+//	waitForKeyACCActive();
+//	waitForKeyONActive();
+//	waitForVCUCheckSelfOK();
 	PowerOnHighVoltage();
 	return 0;
 }
 
-#define KEY_TO_ACC() (gpio_read(IO_STATUS_ACC) == 1)
-#define KEY_TO_ON() (gpio_read(IO_STATUS_ON) == 1)
-#define DC_CHARGER_INSERT() (gpio_read(IO_STATUS_CC2) == 1)
-#define DC_CHARGER_DISCONNECT() (gpio_read(IO_STATUS_CC2) == 0)
-#define AC_CHARGER_INSERT() (adcRead(ADC_PORT_ACCIN) > T_AC_VALUE )
-#define AC_CHARGER_DISCONNECT() ( (gpio_read(ADC_PORT_ACCIN) < T_AC_VALUE))
 
 
 int BMS_GetChargerConnectStatus(void)    // 1,connect 0:unconnected
 {
-	if(DC_CHARGER_INSERT || AC_CHARGER_INSERT)
+	if(DC_CHARGER_INSERT() || AC_CHARGER_INSERT())
 		return 1;
 	return 0;
 }
@@ -400,18 +397,14 @@ int SleepModeDetection(void)
 	}
 	else if(ACChargeInActive())
 	{
-		SetSysteActivemMode(SYSTEM_ACTIVE_MODE_ACCHARGER_IN);
+		SetSystemActiveMode(SYSTEM_ACTIVE_MODE_ACCHARGER_IN);
 	}
-	else if(DCChargeInActive())
+	else if(DCChargeInActiveCheck())
 	{
 		SetSystemActiveMode(SYSTEM_ACTIVE_MODE_DCCHARGER_IN);
 	}
 	return gSysteActiveMode;
 }
-
-
-
-
 
 
 int ACCharge(void)

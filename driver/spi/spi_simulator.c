@@ -1,13 +1,16 @@
 #include "spi/spi_simulator.h"
 #include "Gpio/gpio.h"
 #include "timer/timer.h"
-
-void spi_delay(void)
+//#include "derivative.h"
+//#include "SD.h"
+//void spi_delay(void n)
+void delayus(UINT16 n)
 {
-	UINT16 j = 0, i = 0;
-	for( j=0x0f;j;j--)
-		for(i=0xffff;i;i--)
-			;
+	while(n--);
+	//UINT16 j = 0, i = 0;
+	//for( j=0x0f;j;j--)
+		//for(i=0xffff;i;i--)
+			//;
 }
 
 
@@ -28,36 +31,76 @@ int spi_init(void) {
  */
 void ss_enable(int enable) {
     (void)enable;
-//	if (enable)
-//		set_gpio_value(SS, 0);                  //SS低电平，从设备使能有效  
-//	else
-//		set_gpio_value(SS, 1);                  //SS高电平，从设备使能无效  
+	if (enable)
+		set_gpio_value(SS, 0);                  //SS低电平，从设备使能有效  
+	else
+		set_gpio_value(SS, 1);                  //SS高电平，从设备使能无效  
 	return;
 }
 /* SPI字节写 */
 void spi_write_byte(UINT8 b) 
 {
 	int i;
-	for (i = 7; i >= 0; i--) {
-		set_gpio_value(SCLK, 0);
-		set_gpio_value(MOSI, b & (1 << i));         //从高位7到低位0进行串行写入  
-		spi_delay();                            //延时  
+	for (i = 7; i >= 0; i--) {		
+		set_gpio_value(MOSI, (b & (1 << i))>>i);         //从高位7到低位0进行串行写入  
+		delayus(0x30);
+		//spi_delay();                            //延时  
 		set_gpio_value(SCLK, 1);                // CPHA=1，在时钟的第一个跳变沿采样  
-		spi_delay();
+		delayus(0x30);
+		set_gpio_value(SCLK, 0);
+		//spi_delay();
 	}
 }
 /* SPI字节读 */
-UINT8 spi_read_byte(UINT8 value) {
+UINT8 spi_read_byte(void) {
 	int i;
-	UINT8 r = 0;
+	UINT8 r = 0,value=0;
 	for (i = 0; i < 8; i++) {
-		set_gpio_value(SCLK, 0);
-		spi_delay();                            //延时  
-		set_gpio_value(SCLK, 1);                // CPHA=1，在时钟的第一个跳变沿采样  
-		r = (r << 1) | get_gpio_value(MISO);         //从高位7到低位0进行串行读出  
-		spi_delay();
+		delayus(0x30);
+		set_gpio_value(SCLK, 1);
+		r =( (r << 1) | get_gpio_value(MISO));         //从高位7到低位0进行串行读出  
+		delayus(0x30);
+		//spi_delay();                            //延时  
+		set_gpio_value(SCLK, 0);                // CPHA=1，在时钟的第一个跳变沿采样  
+		
+		
+		//spi_delay();
 	}
+	value=r;
+	return value;
 }
+ 
+void SPI_Write(UINT8 *buff, UINT16 len)
+{
+
+  UINT16 i = 0;
+                
+  delayus(50);
+  
+  for( i=0; i<len ; i++) {
+	  spi_write_byte( buff[i]);
+	  delayus( 1925); 
+  }
+  
+  //while(!SPI1SR_SPTEF);
+  //delayus(200);
+}
+
+void SPI_Read(UINT8 *dstbuf, UINT16 n) 
+{
+    delayus(50);
+    while(n-- && dstbuf){
+      //SPI1_send(0xff);
+    	delayus(1925);
+      *dstbuf++=spi_read_byte();     
+    }
+    delayus(50);  
+}
+
+
+
+
+
 //
 //int test_spi(void)
 //{

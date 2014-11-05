@@ -1,7 +1,6 @@
 #ifndef _SYSTEM_STATE_H_
 #define _SYSTEM_STATE_H_
 
-int getSystemState(void);
 
 struct s_state_check
 {
@@ -25,7 +24,10 @@ enum system_mode
 	SYSTEM_MODE_AC_CHARGE
 };
 
+int getSystemState(void);
 int SystemStateMachine(void);
+//int SetSystemMode(UINT8 mode);
+
 
 #endif
 

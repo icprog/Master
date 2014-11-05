@@ -1,5 +1,5 @@
 #ifndef _PORT_DEFS_H_
-#define IO__PORT_DEFS_H_
+#define _PORT_DEFS_H_
 /*
  LED5 	GPIO 145
  LED4	GPIO 144
@@ -84,7 +84,7 @@ static const UINT8 g_out_port[] =
 #define ADC_PORT_CURRENT_DISCHARGE 2
 #define ADC_PORT_CURRENT_CHARGE 3
 #define ADC_PORT_PRECHARGE 4
-#define ADC_PORT_ACC 5  // AC charger insert check
+#define ADC_PORT_ACCIN 5  // AC charger insert check
 /*
  MBM_SCK	SPI GPIO102	LTC6804ͨѶ
  MBM_CS	SPI GPIO105	LTC6804ͨѶ
@@ -94,7 +94,7 @@ static const UINT8 g_out_port[] =
  * */
 #define SPIB_PORT_SCK	102
 #define SPIB_PORT_CS	105
-#define SPIB_PORT_MISO	103
+#define SPIB_PORT_MISO	103//179     //
 #define SPIB_PORT_MOSI	104
 
 /*
