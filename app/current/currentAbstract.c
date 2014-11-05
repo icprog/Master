@@ -39,7 +39,15 @@ struct CCurrentsThresholdConstValue
  * private gloable value
  * 
  * ******************************************************************************/
-static const struct CCurrentsThresholdConstValue gThresholdValue;  //TODO initial
+#define SET_CURRENT_CONSTVALUE(lever1,lever2,adc) {lever1,lever2,adc}
+static const struct CCurrentsThresholdConstValue gThresholdValue  //TODO initial
+=
+{
+		SET_CURRENT_CONSTVALUE(THREATHOLD_VALUE_CAHRGE_OC_LEVER1,THREATHOLD_VALUE_CAHRGE_OC_LEVER2,ADC_CHANNEL_CHARGE),
+		SET_CURRENT_CONSTVALUE(THREATHOLD_VALUE_DISCAHRGE_OC_LEVER1,THREATHOLD_VALUE_DISCAHRGE_OC_LEVER2,ADC_CHANNEL_DISCHARGE),
+		SET_CURRENT_CONSTVALUE(THREATHOLD_VALUE_FEEDBACK_OC_LEVER1,THREATHOLD_VALUE_FEEDBACK_OC_LEVER2,ADC_CHANNEL_DISCHARGE),
+	//{THREATHOLD_VALUE_CAHRGE_OC_LEVER1,THREATHOLD_VALUE_CAHRGE_OC_LEVER2, ADC_CHANNEL_	
+};
 static struct CCurrentsMember gCurrent;
 
 
