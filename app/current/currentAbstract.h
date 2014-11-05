@@ -1,7 +1,14 @@
 #ifndef _CURRENT_ABSTRACT_H_
 #define _CURRENT_ABSTRACT_H_
+/*
+ * current module
+ * by mgc 20141105
+ * */
+
 #include "public/types.h"
 #include "adc/adc.h"
+#include "public/systemState.h"
+
 
 /*
  * types
@@ -35,27 +42,41 @@ enum current_adchannel
   TOTAL_CURRENT_ADCS
 };
 
+/*
+ * macros
+ * */
+//TODO
+#define ADC_CHANNEL_CHARGE
+#define ADC_CHANNEL_DISCHARGE
+
+#define THREATHOLD_VALUE_CAHRGE_OC_LEVER1
+#define THREATHOLD_VALUE_CAHRGE_OC_LEVER2
+#define THREATHOLD_VALUE_DISCAHRGE_OC_LEVER1
+#define THREATHOLD_VALUE_DISCAHRGE_OC_LEVER2
+#define THREATHOLD_VALUE_FEEDBACK_OC_LEVER1
+#define THREATHOLD_VALUE_FEEDBACK_OC_LEVER2
+
+
+
 /* 
- * 
+ * external fuction interfaces
  * */
 #define CURRENT_ADC_READ(i)  Adc_ReadResultMvByChannel(i)
-
 extern int GetSystemState(void);
-extern TYPE_CURRENT BMS_GetCurrentValueMaxAllowableDischarge(void);
-extern TYPE_CURRENT BMS_GetCurrentValueMaxAllowableCharge(void);
 
 
-
-// simulator current
-TYPE_CURRENT set_simulator_current( TYPE_CURRENT charge_current, TYPE_CURRENT discharge_current );
-
+/*private interfaces*/
 //TYPE_CURRENT getCurrentById(int id);
 TYPE_CURRENT BMS_GetCurrentValueFeedback(void);
 TYPE_CURRENT BMS_GetCurrentValueBUS(void);
 int observerCurrentUpdate(void); // called by adc update
 int BMS_GetErrStatusCurrentByType( UINT8 types );
 
-TYPE_CURRENT BMS_GetCurrentValueMaxAllowableFeedback(void);  //TODO
 
+extern TYPE_CURRENT BMS_GetCurrentValueMaxAllowableFeedback(void);  //TODO
+// simulator current
+TYPE_CURRENT set_simulator_current( TYPE_CURRENT charge_current, TYPE_CURRENT discharge_current ); //TODO
+extern TYPE_CURRENT BMS_GetCurrentValueMaxAllowableDischarge(void);  //TODO
+extern TYPE_CURRENT BMS_GetCurrentValueMaxAllowableCharge(void);   //TODO
 #endif
 
