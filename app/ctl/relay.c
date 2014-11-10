@@ -1,4 +1,5 @@
 #include "ctl/relay.h"
+#include "voltage/voltage.h"
 int OpenRelayNegative(void)
 {
 	//TODO

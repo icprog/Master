@@ -23,6 +23,10 @@ int SetSystemMode(UINT8 mode)
 	gSystemMode.systemModule = mode;
 	return 0;
 }
+int getSystemState(void)
+{
+	return GetSystemMode();
+}
 
 int SystemStateMachine(void)
 {

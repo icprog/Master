@@ -2,9 +2,10 @@
 /*                     初始化ADC转换                        */
 /************************************************************/
 #include "MPC5634M.h"
-#include "gpio.h"
+#include "Gpio/gpio.h"
+#include "adc/adc.h"
 
-void initADC0(void)
+static void initADC0(void)
 {
     EQADC.CFPR[0].R=0x80801001;            /* Send CFIFO 0 a ADC0 configuration command 
                                             enable ADC0 & sets prescaler= divide by 2 */    
@@ -28,7 +29,7 @@ void Adc_InitADC0(void)
 /************************************************************/
 /*                       ADC转换命令        转换 0~39               */
 /************************************************************/
-void Adc_ConvertByChannel(UINT8 channel)
+static void Adc_ConvertByChannel(UINT8 channel)
 {
 	UINT32 command = 0x80000000;
 	assert( channel<39);
@@ -38,7 +39,7 @@ void Adc_ConvertByChannel(UINT8 channel)
     EQADC.CFCR[0].R = 0x0410;     /* Trigger CFIFO 0 using Single Scan SW mode */  	
 }
 
-UINT32 Adc_ReadResult(void)
+static UINT32 Adc_ReadResult(void)
 {
 	UINT32 Result = 0;
 //	UINT32 ResultInmv = 0;
@@ -75,7 +76,7 @@ UINT32 Adc_ReadResultMvByChannel(UINT8 channel)
 /************************************************************/
 /*                       ADC转换命令                        */
 /************************************************************/
-void SendConvCmd(void)
+static void SendConvCmd(void)
 {
     
     EQADC.CFPR[0].R = 0x80000000;  /* Conversion command: convert channel 0 */
@@ -87,19 +88,28 @@ void SendConvCmd(void)
 /************************************************************/
 /*                       ADC读取结果                       */
 /************************************************************/
-uint32_t ReadResult(void) 
-{  
-  uint32_t Result = 0;
-  uint32_t ResultInmv = 0;
-  SendConvCmd();                /* Send one conversion command */
-  while (EQADC.FISR[0].B.RFDF != 1){}      /* Wait for RFIFO 0's Drain Flag to set */
-  Result = EQADC.RFPR[0].R;                /* ADC result */ 
-  ResultInmv = (uint32_t)((5000*Result)/0x3FFC);  /* ADC result in millivolts */        
-  EQADC.FISR[0].B.RFDF = 1;                /* Clear RFIFO 0's Drain Flag */
-  EQADC.FISR[0].B.EOQF = 1;                /* Clear CFIFO's End of Queue flag */
-  return Result;
+//uint32_t ReadResult(void) 
+//{  
+//  uint32_t Result = 0;
+//  uint32_t ResultInmv = 0;
+//  SendConvCmd();                /* Send one conversion command */
+//  while (EQADC.FISR[0].B.RFDF != 1){}      /* Wait for RFIFO 0's Drain Flag to set */
+//  Result = EQADC.RFPR[0].R;                /* ADC result */ 
+//  ResultInmv = (uint32_t)((5000*Result)/0x3FFC);  /* ADC result in millivolts */        
+//  EQADC.FISR[0].B.RFDF = 1;                /* Clear RFIFO 0's Drain Flag */
+//  EQADC.FISR[0].B.EOQF = 1;                /* Clear CFIFO's End of Queue flag */
+//  return Result;
+//}
+
+int adc_currentUpdate(void)
+{
+	return 0;
 }
 
+int adc_update(void)
+{
+	return 0; //TODO
+}
 
 int test_Adc_init(void)
 {

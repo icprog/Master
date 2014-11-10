@@ -251,6 +251,10 @@ static int checkSumVoltageState(UINT32 sum_voltage)
 	{
 		ret = STATE_SUM_VOL_HIGH;
 	}
+	else 
+	{
+		ret = STATE_VOL_NORMAL;
+	}
 	return ret;
 }
 
@@ -276,43 +280,14 @@ static int checkVoltageDiffState(UINT16 min_vol, UINT16 max_vol)
 int observerVoltageUpdate(void)
 {
 	int rv = 0;
-	UINT8 i = 0, j = 0, k = 0, temp_sleep = 0;
+	UINT8 i = 0, j = 0, k = 0, temp_sleep = 0, flag_vol_state_change = 0;
 	UINT16 voltage = 0;
 	UINT32 temp_sum = 0;
 	struct state_voltage *pvstate = NULL;
 	int state;
 	int t_vol_state = 0;
 	UINT8 flag_cell_state_change = 0;
-#ifdef _USE_BM03
-	bq536_volt_read(g_UCT_voltage);
-	/*abandon the invalid cells
-	 for( i=0; i<NUMBER_OF_BQ_DEVICES; i++)
-	 {
-	 for( j=0; j<NUMBER_OF_CELLS_OF_PACK[i]; j++ )
-	 {
-	 g_UCT_voltage[k++] = g_UCT_voltage[(i+1)*j];
-	 }
-	 }*/
-#endif
 
-#ifdef _USE_BM01
-	for ( ic_num = 0; ic_num < LTC6804_IC_NUM; ic_num ++ )
-	{
-		rv = ltc6804_get_voltage ( ic_num, buff );
-
-		if ( rv == UCT_SUCCESS )
-		{
-			( void ) memcpy ( &g_UCT_voltage[ic_num * LTC6804_MAX_VOL], buff, LTC6804_MAX_VOL * 2 );
-		}
-		else
-		{
-			//�쳣����
-			//mprintf("��ѹ�ɼ�����!\r\n");
-			//rv = UCT_ERR_OPT_FAIL;
-			continue;
-		}
-	}
-#endif
 	/*the next simulator should move to driver layer*/
 //	i = get_simulator_mode();
 //	if ((i & MASK_BIT_SIMULATOR_MODE_VOL) == 0)
@@ -378,6 +353,7 @@ int observerVoltageUpdate(void)
 	if (flag_cell_state_change)
 	{
 		//todo update()
+		flag_vol_state_change = 1;
 	}
 	
 	/*observe object2 sum voltage state */
@@ -387,6 +363,7 @@ int observerVoltageUpdate(void)
 		pvstate->sum_vol_state = state;
 		MGC_SET_BIT(t_vol_state, 1<<state);
 		//todo update()
+		flag_vol_state_change = 1;
 	}
 	
 	/*observer object3 voltage differences state*/
@@ -396,18 +373,16 @@ int observerVoltageUpdate(void)
 		pvstate->cell_vol_diff_state = state ;
 		MGC_SET_BIT(t_vol_state, 1<<state);
 		//todo update()
+		flag_vol_state_change = 1;
 	}
 	
+	if(
+		flag_vol_state_change == 1)
+	{
+		//TODO update
+		
+	}
 	
-//	if (temp_sleep >= TOTAL_VOLTAGES || getVoltageStatusUV() != 0)
-//	{
-//		g_sleep_voltage_allowed = 1;
-//	}
-//	else
-//	{
-//		g_sleep_voltage_allowed = 0;
-//	}
-
 	g_voltage_vars.g_battery_vol_sum = temp_sum;
 	g_voltage_vars.g_volatage_state.voltage_state = t_vol_state;
 	return (rv);

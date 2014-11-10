@@ -25,7 +25,7 @@ static const UCHAR head[] = {  '{', '<'  };
 static const UCHAR tail[] = {  '>', '}' };
 
 #pragma push
-#pragma align off        
+//#pragma align off        
 struct uart_cmd_pkg
 {
     UCHAR cmd;

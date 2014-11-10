@@ -54,16 +54,20 @@ int set_simulator_vol(const UINT16 *pvols, UINT8 n_batterys);
  * the next four functions is needed by vcu_protocol.h
  * */
 UINT32 BMS_GetVoltageValueBatteryTotal(void);  //mv
-TYPE_VOLTAGE BMS_GetVoltageValueMaxCell(void); //mv
-TYPE_VOLTAGE BMS_GetVoltageValueMinCell(void); //mv
-int BMS_GetErrStatusVoltageByType( UINT8 types);         //1:err, 0 OK
-
+TYPE_VOLTAGE BMS_GetVoltageValueMax(void); //mv
+TYPE_VOLTAGE BMS_GetVoltageValueMin(void); //mv
 TYPE_VOLTAGE getVoltageValueByCellIndex(UINT8 index);
-int observerVoltageUpdate(void);
 
+int BMS_GetVolValueMaxCellId(void);
+int BMS_GetVolValueMinCellId(void);
+
+int BMS_GetErrStatusVoltageByType( UINT8 types);         //1:err, 0 OK
 int getSumVoltageState(void);
 int getCellVoltageState(void);
 int getVoltageState(void);
+
+int observerVoltageUpdate(void);
+
 
 #define V_2_100UV(v)  ((v)*1000*10)
 #define V_2_MV(v) ((v)*1000)

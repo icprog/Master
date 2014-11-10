@@ -102,7 +102,7 @@ int insulation_resistance_calculate ( void )
     //step 1
     //v1_0 = get_average_v1_20();
     //v2_0 = get_average_v2_20();
-    INT32 temp1 = 0, temp2 = 0;
+    UINT32 temp1 = 0, temp2 = 0;
      
     close_s1();
     close_s2();

@@ -298,7 +298,7 @@ charge_control(void)
 /*
  * system wake up
  * */
-int SystemWakeUp(void)
+static int SystemWakeUp(void)
 {
 //	waitForKeyACCActive();
 //	waitForKeyONActive();

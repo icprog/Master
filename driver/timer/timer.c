@@ -16,7 +16,7 @@
 #define S_2_S(s)  ((s)%60)
 
 UINT8 Sys_Flag = 0;
-static VUINT64 g_time_ms = 0, g_time_100ms = 0, g_time_s = 0; /*系统时钟计数器声明，在RTI中断服务程序中累加*/
+static VUINT32 g_time_ms = 0, g_time_100ms = 0, g_time_s = 0; /*系统时钟计数器声明，在RTI中断服务程序中累加*/
 
 void
 RTI_ISR(void);
@@ -44,7 +44,7 @@ void initPIT_RTI(void)
 
 }
 
-UINT64 getSystemTimeMs(void)
+UINT32 getSystemTimeMs(void)
 {
 	return g_time_ms;
 }
@@ -56,7 +56,7 @@ UINT64 getSystemTimeS(void)
 
 void delay_us(UINT32 us)
 {
-	UINT16 j = 0, i = 0;
+	UINT32 j = 0, i = 0;
 	for (j = us; j; j--)
 		for (i = 0xff; i; i--)
 			;
@@ -107,7 +107,7 @@ int test_timer_RTI(void)
 	{
 		if (getSystemTimeMs() % 500 == 0)
 		{
-			Sys_Flag = 1-Sys_Flag;
+			Sys_Flag = 1 - Sys_Flag;
 		}
 
 		if (Sys_Flag)
@@ -171,7 +171,7 @@ void init_PIT_RTI(void)
 		PIT .TIMER[i].LDVAL.R = 64000;       //周期中断定时器通道1中断周期为1ms，
 		PIT .TIMER[i].TCTRL.R = 0X00000003;  //周期中断定时器通道1中断使能，定时器使能
 		//INTC.PSR[301+i].R = 1;                //周期中断定时器通道1优先级
-		INTC_InstallINTCInterruptHandler(isr_pits[i], 301 + i, 2);  //设置中断号
+		INTC_InstallINTCInterruptHandler(isr_pits[i], (UINT16)(301 + i), 2);  //设置中断号
 //		INTC_InstallINTCInterruptHandler(RTI_ISR, 302, 1);  //设置中断号
 	}
 }
@@ -272,7 +272,7 @@ const UINT8 key_port[] =
 const UINT8 led_port[] =
 { 188, 189, 190, 191 };
 
-void timer0_isr(void)
+static void timer0_isr(void)
 {
 	static UINT8 flag = 0;
 	flag = 1 - flag;
@@ -281,7 +281,7 @@ void timer0_isr(void)
 	else
 		gpio_set(led_port[0], GPIO_HIGH);
 }
-void timer1_isr(void)
+static void timer1_isr(void)
 {
 	static UINT8 flag = 0;
 	flag = 1 - flag;
@@ -290,7 +290,7 @@ void timer1_isr(void)
 	else
 		gpio_set(led_port[1], GPIO_HIGH);
 }
-void timer2_isr(void)
+static void timer2_isr(void)
 {
 	static UINT8 flag = 0;
 	flag = 1 - flag;
@@ -299,7 +299,7 @@ void timer2_isr(void)
 	else
 		gpio_set(led_port[2], GPIO_HIGH);
 }
-void timer3_isr(void)
+static void timer3_isr(void)
 {
 	static UINT8 flag = 0;
 	flag = 1 - flag;
@@ -317,7 +317,7 @@ int test_timer_pit_init(void)
 	INTC_InitINTCInterrupts();
 //	Config_PLL();
 	init_PIT_RTI();
-	enableIrq();	
+	enableIrq();
 }
 
 int test_timer_pit(void)
@@ -325,14 +325,13 @@ int test_timer_pit(void)
 	int ret = 0;
 	/*make sure that these timers be added only once if in a loop*/
 	static int i = 0;
-	
-	for (i = 0; i < sizeof(test_timer_isrs)/sizeof(type_isr_pit); i++)
+
+	for (i = 0; i < sizeof(test_timer_isrs) / sizeof(type_isr_pit); i++)
 	{
 		gpio_init(led_port[i], GPIO_OUTPUT);
 		gpio_init(key_port[i], GPIO_INPUT);
-		timer_add(i, test_timer_isrs[i], (UINT32)( (i + 1) * 100 ));
+		timer_add(i, test_timer_isrs[i], (UINT32) ((i + 1) * 100));
 	}
-	
 
 //	while (1)
 //		;

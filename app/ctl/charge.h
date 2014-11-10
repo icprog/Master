@@ -44,7 +44,7 @@ enum charge_mode
 
 /*****************************************MACROS******************************************/
 #define MAX_BATTERY_C 100
-#define GET_CURRENT_BY_C(x) ((x)*MAX_BATTERY_C)
+#define GET_CURRENT_BY_C(x) ((UINT16)((x)*MAX_BATTERY_C))
 #define REGISTER_CHARGE_EVENTS( NAME  ) {\
         #NAME,\
         CHARGE_CTL_##NAME\

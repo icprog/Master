@@ -43,9 +43,12 @@ enum type_state_temperature
 //int setTemperatureByIndex( UINT8 index, TYPE_TEMP temperature);
 TYPE_TEMP BMS_GetTemperatureValueAverage(void);
 TYPE_TEMP BMS_GetTemperaturValueMaxValue(void);
-TYPE_TEMP BMS_GetTemperatureValueMin(void);
-int BMS_GetTemperatureIdMaxValue(void);
-int BMS_GetTemperatureIdMinValue(void);
+TYPE_TEMP BMS_GetTemperatureValueMinValue(void);
+TYPE_TEMP BMS_GetTemperatureValueById(int id);
+
+int BMS_GetTemperatureMaxValueSensorId(void);
+int BMS_GetTemperatureMinValueSensorId(void);
+
 int BMS_GetErrStatusTemperatureByType( UINT8 types);     //1:err, 0 OK
 
 int getTemperatureState(void);

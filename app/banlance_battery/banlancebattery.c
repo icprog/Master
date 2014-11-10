@@ -108,7 +108,7 @@ void balance_cal(void)
 
 		for (i = 0; i < n; i++)
 		{
-			if ((getVoltageValueByCellIndex(validBalance[i]) - BMS_GetVoltageValueMinCell())
+			if ((getVoltageValueByCellIndex(validBalance[i]) - BMS_GetVoltageValueMin())
 					> THREASHOLD_V_BANLANCE)
 			{
 				gb.flags[validBalance[i]] = 1;

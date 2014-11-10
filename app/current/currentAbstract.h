@@ -8,6 +8,7 @@
 #include "public/types.h"
 #include "adc/adc.h"
 #include "public/systemState.h"
+#include "Gpio/port_Defs.h"
 
 
 /*
@@ -46,15 +47,15 @@ enum current_adchannel
  * macros
  * */
 //TODO
-#define ADC_CHANNEL_CHARGE
-#define ADC_CHANNEL_DISCHARGE
+#define ADC_CHANNEL_CHARGE //ADC_PORT_CURRENT_CHARGE
+#define ADC_CHANNEL_DISCHARGE //ADC_PORT_CURRENT_DISCHARGE
 
-#define THREATHOLD_VALUE_CAHRGE_OC_LEVER1
-#define THREATHOLD_VALUE_CAHRGE_OC_LEVER2
-#define THREATHOLD_VALUE_DISCAHRGE_OC_LEVER1
-#define THREATHOLD_VALUE_DISCAHRGE_OC_LEVER2
-#define THREATHOLD_VALUE_FEEDBACK_OC_LEVER1
-#define THREATHOLD_VALUE_FEEDBACK_OC_LEVER2
+#define THREATHOLD_VALUE_CAHRGE_OC_LEVER1  50
+#define THREATHOLD_VALUE_CAHRGE_OC_LEVER2 50
+#define THREATHOLD_VALUE_DISCAHRGE_OC_LEVER1 50
+#define THREATHOLD_VALUE_DISCAHRGE_OC_LEVER2 50
+#define THREATHOLD_VALUE_FEEDBACK_OC_LEVER1 50
+#define THREATHOLD_VALUE_FEEDBACK_OC_LEVER2 50
 
 
 
@@ -71,6 +72,7 @@ TYPE_CURRENT BMS_GetCurrentValueFeedback(void);
 TYPE_CURRENT BMS_GetCurrentValueBUS(void);
 int observerCurrentUpdate(void); // called by adc update
 int BMS_GetErrStatusCurrentByType( UINT8 types );
+TYPE_CURRENT BMS_GetChargeCurrentValue(void);
 
 
 extern TYPE_CURRENT BMS_GetCurrentValueMaxAllowableFeedback(void);  //TODO

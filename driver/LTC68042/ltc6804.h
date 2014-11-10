@@ -70,7 +70,6 @@
 //void ltc6804_init() ;
 //void wr_balance(  UINT8 index, UINT8 state );
 enum UCT_ERR_CODE ltc6804_checkself ();
-enum UCT_ERR_CODE ltc6804_voltage_monitor () ;
 enum UCT_ERR_CODE ltc6804_temp_monitor ();
 enum UCT_ERR_CODE ltc6804_set_balance(UINT8 index,UINT8 state);
 enum UCT_ERR_CODE ltc6804_voltage_monitor ();

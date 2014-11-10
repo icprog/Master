@@ -34,7 +34,6 @@ struct CCurrentsThresholdConstValue
 	struct CCurrentThresholdValue mCurrentThreshold[TOTAL_CURRENTS];
 };
 
-
 /*********************************************************************************
  * private gloable value
  * 
@@ -42,14 +41,20 @@ struct CCurrentsThresholdConstValue
 #define SET_CURRENT_CONSTVALUE(lever1,lever2,adc) {lever1,lever2,adc}
 static const struct CCurrentsThresholdConstValue gThresholdValue  //TODO initial
 =
-{
-		SET_CURRENT_CONSTVALUE(THREATHOLD_VALUE_CAHRGE_OC_LEVER1,THREATHOLD_VALUE_CAHRGE_OC_LEVER2,ADC_CHANNEL_CHARGE),
-		SET_CURRENT_CONSTVALUE(THREATHOLD_VALUE_DISCAHRGE_OC_LEVER1,THREATHOLD_VALUE_DISCAHRGE_OC_LEVER2,ADC_CHANNEL_DISCHARGE),
-		SET_CURRENT_CONSTVALUE(THREATHOLD_VALUE_FEEDBACK_OC_LEVER1,THREATHOLD_VALUE_FEEDBACK_OC_LEVER2,ADC_CHANNEL_DISCHARGE),
-	//{THREATHOLD_VALUE_CAHRGE_OC_LEVER1,THREATHOLD_VALUE_CAHRGE_OC_LEVER2, ADC_CHANNEL_	
-};
+		{
+				{
+				{ THREATHOLD_VALUE_CAHRGE_OC_LEVER1,
+						THREATHOLD_VALUE_CAHRGE_OC_LEVER2, ADC_CHANNEL_CHARGE},
+						{ THREATHOLD_VALUE_DISCAHRGE_OC_LEVER1,
+								THREATHOLD_VALUE_DISCAHRGE_OC_LEVER2, ADC_CHANNEL_DISCHARGE},
+						{ THREATHOLD_VALUE_FEEDBACK_OC_LEVER1,
+								THREATHOLD_VALUE_FEEDBACK_OC_LEVER2, ADC_CHANNEL_DISCHARGE} }
+//		SET_CURRENT_CONSTVALUE(THREATHOLD_VALUE_CAHRGE_OC_LEVER1,THREATHOLD_VALUE_CAHRGE_OC_LEVER2,ADC_CHANNEL_CHARGE),
+//		SET_CURRENT_CONSTVALUE(THREATHOLD_VALUE_DISCAHRGE_OC_LEVER1,THREATHOLD_VALUE_DISCAHRGE_OC_LEVER2,ADC_CHANNEL_DISCHARGE),
+//		SET_CURRENT_CONSTVALUE(THREATHOLD_VALUE_FEEDBACK_OC_LEVER1,THREATHOLD_VALUE_FEEDBACK_OC_LEVER2,ADC_CHANNEL_DISCHARGE)
+		//{THREATHOLD_VALUE_CAHRGE_OC_LEVER1,THREATHOLD_VALUE_CAHRGE_OC_LEVER2, ADC_CHANNEL_	
+		};
 static struct CCurrentsMember gCurrent;
-
 
 /*
  * functions 
@@ -87,14 +92,13 @@ static void updateCurrentStatusValue(void)
 
 }
 
-
 static TYPE_CURRENT getCurrentById(int id)
 {
 	assert(id<TOTAL_CURRENTS);
 	return gCurrent.mCurrents[id].mCurrentCurrent;
 }
 
-static int getCurrentStatusById( int id)
+static int getCurrentStatusById(int id)
 {
 	assert(id<TOTAL_CURRENTS);
 	return gCurrent.mCurrents[id].mCurrentStatus;
@@ -131,48 +135,48 @@ static int updataFeedbackCurrentValue(void)
 	int systemState = getSystemState();
 	if (systemState == SYSTEM_MODE_DISCHARGE)
 		current = getCurrentById(CURRENT_ID_DISCHARGE);
-	setCurrentValueById( CURRENT_ID_FEEDBACK, current);
+	setCurrentValueById(CURRENT_ID_FEEDBACK, current);
 	return current;
 }
 static int updataBusCurrentValue(void)
 {
-		int systemState = getSystemState();
-		TYPE_CURRENT current = 0;
-		if (systemState == SYSTEM_MODE_DISCHARGE)
-		{
-			current = getCurrentById(CURRENT_ID_DISCHARGE);
-		}
-		else if (systemState == SYSTEM_MODE_AC_CHARGE
-				|| systemState == SYSTEM_MODE_DC_CHARGE)
-		{
-			current = getCurrentById(CURRENT_ID_CHARGE);
-		}
-		else 
-		{
-			current = 0;
-		}
-		setCurrentValueById( CURRENT_ID_BUS, current);
-		return current;
+	int systemState = getSystemState();
+	TYPE_CURRENT current = 0;
+	if (systemState == SYSTEM_MODE_DISCHARGE)
+	{
+		current = getCurrentById(CURRENT_ID_DISCHARGE);
+	}
+	else if (systemState == SYSTEM_MODE_AC_CHARGE
+			|| systemState == SYSTEM_MODE_DC_CHARGE)
+	{
+		current = getCurrentById(CURRENT_ID_CHARGE);
+	}
+	else
+	{
+		current = 0;
+	}
+	setCurrentValueById(CURRENT_ID_BUS, current);
+	return current;
 }
 
 int observerCurrentUpdate(void)
 {
 	enum UCT_ERR_CODE rv = UCT_SUCCESS;
-	TYPE_CURRENT current  = 0;
+	TYPE_CURRENT current = 0;
 	int i = 0;
 	for (i = 0; i < TOTAL_CURRENTS; i++)
 	{
-		current = (TYPE_CURRENT)((CURRENT_ADC_READ(gThresholdValue.mCurrentThreshold[i].adChannel) * 3) / 32); //((X * 1.25mV) * 300A ) / (4*1000)
+		current =
+				(TYPE_CURRENT) ((CURRENT_ADC_READ(gThresholdValue.mCurrentThreshold[i].adChannel)
+						* 3) / 32); //((X * 1.25mV) * 300A ) / (4*1000)
 		setCurrentValueById(i, current);
 	}
-	
+
 	updataBusCurrentValue();
 	updataFeedbackCurrentValue();
 	updateCurrentStatusValue();
 	return (rv);
 }
-
-
 
 TYPE_CURRENT BMS_GetCurrentValueFeedback(void)
 {
@@ -184,57 +188,56 @@ TYPE_CURRENT BMS_GetCurrentValueBUS(void)
 	return getCurrentById(CURRENT_ID_BUS);
 }
 
-
-int BMS_GetErrStatusCurrentByType( UINT8 types )
+int BMS_GetErrStatusCurrentByType(UINT8 types)
 {
 	//TODO
 	int ret = 0;
-	switch(types)
+	switch (types)
 	{
 	case STATE_CURRENT_DISCHARGE_OC_LEVER1:
-		if( getCurrentStatusById(CURRENT_ID_DISCHARGE) == SYSTEM_FAULT_LEVER1 )
+		if (getCurrentStatusById(CURRENT_ID_DISCHARGE) == SYSTEM_FAULT_LEVER1)
 		{
 			return 1;
 		}
-		else 
+		else
 			return 0;
 
 	case STATE_CURRENT_DISCHARGE_OC_LEVER2:
-		if( getCurrentStatusById(CURRENT_ID_DISCHARGE) == SYSTEM_FAULT_LEVER2 )
+		if (getCurrentStatusById(CURRENT_ID_DISCHARGE) == SYSTEM_FAULT_LEVER2)
 		{
 			return 1;
 		}
-		else 
+		else
 			return 0;
 	case STATE_CURRENT_CHARGE_OC_LEVER1:
-		if( getCurrentStatusById(CURRENT_ID_CHARGE) == SYSTEM_FAULT_LEVER1 )
+		if (getCurrentStatusById(CURRENT_ID_CHARGE) == SYSTEM_FAULT_LEVER1)
 		{
 			return 1;
 		}
-		else 
+		else
 			return 0;
 
 	case STATE_CURRENT_CHARGE_OC_LEVER2:
-		if( getCurrentStatusById(CURRENT_ID_CHARGE) == SYSTEM_FAULT_LEVER2 )
+		if (getCurrentStatusById(CURRENT_ID_CHARGE) == SYSTEM_FAULT_LEVER2)
 		{
 			return 1;
 		}
-		else 
+		else
 			return 0;
 	case STATE_CURRENT_FEEDBACK_OC_LEVER1:
-		if( getCurrentStatusById(CURRENT_ID_FEEDBACK) == SYSTEM_FAULT_LEVER1 )
+		if (getCurrentStatusById(CURRENT_ID_FEEDBACK) == SYSTEM_FAULT_LEVER1)
 		{
 			return 1;
 		}
-		else 
+		else
 			return 0;
 
 	case STATE_CURRENT_FEEDBACK_OC_LEVER2:
-		if( getCurrentStatusById(CURRENT_ID_FEEDBACK) == SYSTEM_FAULT_LEVER2 )
+		if (getCurrentStatusById(CURRENT_ID_FEEDBACK) == SYSTEM_FAULT_LEVER2)
 		{
 			return 1;
 		}
-		else 
+		else
 			return 0;
 	default:
 		return 0;

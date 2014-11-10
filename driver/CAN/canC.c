@@ -17,7 +17,6 @@ void initCAN_C(void)
     for(i=0;i<32;i++)
     {
     	CAN_C.BUF[i].CS.B.CODE=0;   //所有消息缓冲区为非活动态
-
     }
     CAN_C.BUF[4].CS.B.IDE=0;        //缓冲通道4将寻找一个标准的ID
     CAN_C.BUF[4].ID.B.STD_ID=555;   //缓冲通道4将寻找ID = 555

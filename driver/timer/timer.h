@@ -9,9 +9,10 @@ enum timer_state
 typedef void (*type_isr_pit)(void);
 /************************************************************/
 void initPIT_RTI(void);
-UINT64 getSystemTimeMs(void);
+UINT32 getSystemTimeMs(void);
 UINT64 getSystemTimeS(void);
 int test_timer_RTI(void);
+int test_timer_pit_init(void);
 int test_timer_pit(void);
 int timer_add(int id, type_isr_pit isr_func, UINT32 timems_interval);
 int timer_stop(int id);
